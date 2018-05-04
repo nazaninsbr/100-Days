@@ -9,7 +9,7 @@
 	<li>transport-layer packet = <b>segment</b> and network-layer packet = <b>datagram</b></li>
 	<li>process-to-process data delivery and error checking (both UDP and TCP provide this)</li>
 </ul>
-2-  _ transport-layer protocols _<br/>
+2-  <i> transport-layer protocols </i><br/>
 <ul>
 	<li>UDP
 		<ul>
@@ -42,7 +42,7 @@
 	    </ul>
 	</li>
 </ul>
-3- _ network-layer protocol _<br/>
+3- <i> network-layer protocol </i><br/>
 <ul>
 	<li>IP
 		<ul>
