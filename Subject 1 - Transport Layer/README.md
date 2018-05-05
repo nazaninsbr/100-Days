@@ -214,7 +214,6 @@
 			<li>variability of the RTT.DevRTT, as an estimate of how much SampleRTT typically deviates from EstimatedRTT:<br/>
 			DevRTT = (1 – 􏰄B) • DevRTT + 􏰄B •| SampleRTT – EstimatedRTT |</li>
 			<li>TimeoutInterval = EstimatedRTT + 4 • DevRTT [when a timeout occurs, the value of TimeoutInterval is doubled to avoid a premature timeout occurring for a subsequent segment that will soon be acknowledged.]</li>
-			<li></li>
 		</ol>
 	</li>
 </ul>
@@ -234,9 +233,41 @@
 		</ul>
 	</li>
 </ul>
-9-<i> TCP: Flow Control </i><br/>
+9- <i> TCP: Flow Control </i><br/>
 <ul>
-	<li>
+	<li>If the application is rela- tively slow at reading the data, the sender can very easily overflow the connection’s receive buffer by sending too much data too quickly.
+	</li>
+	<li>Flow control is thus a speed-matching service—matching the rate at which the sender is sending against the rate at which the receiving application is reading.</li>
+	<li>TCP provides flow control by having the sender maintain a variable called the receive window. Informally, the receive window is used to give the sender an idea of how much free buffer space is available at the receiver.</li>
+	<li>LastByteRcvd – LastByteRead 􏰅<= RcvBuffer</li>
+	<li>rwnd = RcvBuffer – [LastByteRcvd – LastByteRead]</li>
+	<li>Because the spare room changes with time, rwnd is dynamic</li>
+	<li><b>Problem and Solution:</b> There is one minor technical problem with this scheme. To see this, suppose Host B’s receive buffer becomes full so that rwnd = 0. After advertising rwnd = 0 to Host A, also suppose that B has nothing to send to A. Now consider what hap- pens. As the application process at B empties the buffer, TCP does not send new seg- ments with new rwnd values to Host A; indeed, TCP sends a segment to Host A only if it has data to send or if it has an acknowledgment to send. Therefore, Host A is never informed that some space has opened up in Host B’s receive buffer—Host A is blocked and can transmit no more data! To solve this problem, the TCP specifi- cation requires Host A to continue to send segments with one data byte when B’s receive window is zero. These segments will be acknowledged by the receiver. Eventually the buffer will begin to empty and the acknowledgments will contain a nonzero rwnd value.</li>
+</ul>
+10- <i> TCP: Connection Management </i><br/>
+<ul>
+	<li>TCP connection establishment can significantly add to perceived delays
+	</li>
+	<li>Make Connection:
+		<ol>
+			<li><b>SYN Segment :</b> The client-side TCP first sends a special TCP segment to the server-side TCP. This special segment contains no application-layer data. But one of the flag bits in the segment’s header (see Figure 3.29), the SYN bit, is set to 1. client randomly chooses an initial sequence number and puts this number in the sequence number field of the initial TCP SYN segment.</li>
+			<li><b>SYNACK segment :</b> TCP SYN segment arrives at the server host (assuming it does arrive!), the server extracts the TCP SYN segment from the datagram, allocates the TCP buffers and variables to the connection, and sends a connection-granted segment to the client TCP. [allocation of these buffers and variables before completing the third step of the three-way handshake makes TCP vulnerable to a denial-of-service attack known as SYN flooding.]</li>
+			<li>Upon receiving the SYNACK segment, the client also allocates buffers and variables to the connection. The client host then sends the server yet another segment; this last segment acknowledges the server’s connection-granted segment. The SYN bit is set to zero, since the connection is established. This third stage of the three-way handshake may carry client-to-server data in the segment payload.</li>
+		</ol>
+	</li>
+	<li>Close Connection:
+		<ol>
+			<li>FIN</li>
+			<li>FIN_WAIT_1</li>
+			<li>FIN_WAIT_2</li>
+			<li>TIME_WAIT</li>
+		</ol>
+	</li>
+</ul>
+
+11- <i> Principles of Congestion Control </i><br/>
+<ul>
+	<li>read the 3 scenarios
 	</li>
 </ul>
 
@@ -271,7 +302,7 @@
 					<li>if three duplicate ACKs are detected TCP performs a fast retransmit</li>
 				</ul>
 			</li>
-			<li>(1) Congestion avoidance [mandatory]
+			<li>(2) Congestion avoidance [mandatory]
 				<ul>
 					<li>increases the value of cwnd by just a single MSS every RTT</li>
 					<li>method 1: increase cwnd by MSS bytes (MSS/cwnd) when- ever a new acknowledgment arrives.</li>
@@ -279,13 +310,15 @@
 					<li>triple duplicate ACK: TCP halves the value of cwnd (adding in 3 MSS for good measure to account for the triple duplicate ACKs received) and records the value of ssthresh to be half the value of cwnd when the triple duplicate ACKs were received. The fast-recovery state is then entered.</li>
 				</ul>
 			</li>
-			<li>(1) Fast recovery 
+			<li>(3) Fast recovery 
 				<ul>
 					<li> the value of cwnd is increased by 1 MSS for every duplicate ACK received for the missing segment that caused TCP to enter the fast-recovery state.</li>
+					<li> TCP Tahoe, unconditionally cut its congestion window to 1 MSS and entered the slow-start phase after either a timeout-indicated or triple-duplicate-ACK-indicated loss event. The newer version of TCP, TCP Reno, incorporated fast recovery.</li>
 				</ul>
 			</li>
 		</ul>
 	</li>
+	<li>read pages 278 - 282 of the book</li>
 </ul>
 
 
