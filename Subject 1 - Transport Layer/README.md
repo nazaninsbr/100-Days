@@ -169,14 +169,76 @@
 </ul>
 7-<i> TCP </i><br/>
 <ul>
-	<li>
+	<li>connection-oriented
 		<ul>
-	    <li></li>
+	    <li>handshake</li>
+	    <li>TCP protocol runs only in the end systems and not in the intermediate network elements (routers and link-layer switches), the intermediate network elements do not maintain TCP connection state.</li>
 	    </ul>
 	</li>
+	<li>Services
+		<ul>
+			<li>full-duplex service</li>
+			<li>point-to-point (multicasting is not possible)</li>
+		</ul>
+	</li>
+	<li>three-way handshake []
+	</li>
+	<li>things to know
+		<ul>
+			<li>MSS [MSS limits a segments data field <b>NOT</b> the entire segment size]</li>
+			<li>MTU</li>
+			<li>how is MSS set?</li>
+			<li>when should tcp send buffered data?</li>
+			<li>TCP connection consists of buffers, vari- ables, and a socket connection to a process in one host, and another set of buffers, variables, and a socket connection to a process in another host. As mentioned ear- lier, no buffers or variables are allocated to the connection in the network elements (routers, switches, and repeaters) between the hosts.</li>
+		</ul>
+	</li>
+	<li>TCP Segment
+		<ul>
+			<li>TCP header is typically 20 bytes</li>
+			<li>32-bit sequence number field (used for reliable transfer)</li>
+			<li>32-bit acknowledgment number field (used for reliable transfer)</li>
+			<li>16-bit receive window (used for flow control)</li>
+			<li>4-bit header length field (size of header length as a multiple of 32 bits)</li>
+			<li>options field</li>
+			<li>6-bit flag field [ACK bit, RST, SYN, and FIN, PSH bit indicates that the receiver should pass the data to the upper layer immediately. Finally, the URG bit is used to indicate that there is data in this segment that the sending-side upper-layer entity has marked as “urgent.”] </li>
+			<li>16-bit urgent data pointer field (The location of the last byte of this urgent data)</li>
+		</ul>
+	</li>
+	<li>TCP is said to provide cumulative acknowledgments</li>
+	<li> the receiver keeps the out-of-order bytes and waits for the missing bytes to fill in the gaps => more efficient in terms of network bandwidth [not inforced]</li>
+	<li>Round Trip Time
+		<ol type="A">
+			<li>Length of timeout: the timeout should be larger than the connection’s round-trip time (RTT) [or unnecessary retransmissions would be sent.] </li>
+			<li>SampleRTT, for a segment is the amount of time between when the segment is sent (that is, passed to IP) and when an acknowledg- ment for the segment is received. [not calculated for each segment usually one sample RTT taken at a time](never computes a SampleRTT for a segment that has been retransmitted; it only measures SampleRTT for segments that have been transmitted once)</li>
+			<li>EstimatedRTT = (1 – 􏰃A) * EstimatedRTT + 􏰃A * SampleRTT [this weighted average puts more weight on recent samples than on old samples.]</li>
+			<li>variability of the RTT.DevRTT, as an estimate of how much SampleRTT typically deviates from EstimatedRTT:<br/>
+			DevRTT = (1 – 􏰄B) • DevRTT + 􏰄B •| SampleRTT – EstimatedRTT |</li>
+			<li>TimeoutInterval = EstimatedRTT + 4 • DevRTT [when a timeout occurs, the value of TimeoutInterval is doubled to avoid a premature timeout occurring for a subsequent segment that will soon be acknowledged.]</li>
+			<li></li>
+		</ol>
+	</li>
 </ul>
-
-
+8- <i> TCP: Reliable Data Transfer </i><br/>
+<ul>
+	<li>the data stream that a process reads out of its TCP receive buffer is uncorrupted, without gaps, without duplication, and in sequence; that is, the byte stream is exactly the same byte stream that was sent by the end system on the other side of the connection</li>
+	<li>retransmission: timeout | duplicate ack</li>
+	<li>TCP sender FSM</li>
+	<li>Doubling the Timeout Interval and going back to the formula after new ACK</li>
+	<li>TCP does not use negative acknowledgments, the receiver cannot send an explicit negative acknowledgment back to the sender</li>
+	<li><b>Fast Retransmit</b>
+		<ul>
+			<li>One of the problems with timeout-triggered retransmissions is that the timeout period can be relatively long</li>
+			<li>A duplicate ACK is an ACK that reacknowledges a segment for which the sender has already received an earlier acknowledgment.</li>
+			<li style="color: red;">TCP receiver’s ACK generation policy</li>
+			<li>In the case that three duplicate ACKs are received, the TCP sender performs a fast retransmit, retransmitting the missing segment before that segment’s timer expires</li>
+		</ul>
+	</li>
+</ul>
+9-<i> TCP: Flow Control </i><br/>
+<ul>
+	<li>
+	</li>
+</ul>
 
 
 
@@ -227,7 +289,7 @@
 </ul>
 
 
-**- <i> Some Things to Remember </i><br/>
++++ <i> Some Things to Remember </i> +++<br/>
 <ol type="1">
   <li>Each port number is a 16-bit number, ranging from 0 to 65535.</li>
   <li>The port numbers ranging from 0 to 1023 are called well-known port num- bers and are restricted, which means that they are reserved for use by well-known application protocols such as HTTP (which uses port number 80) and FTP (which uses port number 21).</li>
@@ -236,6 +298,7 @@
   <li>If the client and server are using persistent HTTP, then throughout the duration of the persistent connection the client and server exchange HTTP messages via the same server socket. However, if the client and server use non-persistent HTTP, then a new TCP connection is created and closed for every request/response, and hence a new socket is created and later closed for every request/response. </li>
   <li>The TCP segment has 20 bytes of header over- head in every segment, whereas UDP has only 8 bytes of overhead.</li>
   <li>TCP has a 32-bit sequence number field, where TCP sequence numbers count bytes in the byte stream rather than packets.</li>
+  <li>Both Ethernet and PPP link-layer proto- cols have an MSS of 1,500 bytes.</li>
 </ol>
 :)
 
