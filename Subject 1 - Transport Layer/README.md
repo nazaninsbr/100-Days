@@ -147,9 +147,9 @@
 			    <li><b>GBN (Go Back-N)</b>
 			    	<ul>
 			    		<li>N, unacknowledged packets in the pipeline.</li>
-			    		<li>If we define base to be the sequence number of the oldest unacknowledged packet and nextseqnum to be the smallest unused sequence number (that is, the sequence number of the next packet to be sent), then four intervals in the range of sequence numbers can be identified. Sequence numbers in the interval [0,base-1] correspond to packets that have already been transmitted and acknowledged. The inter- val [base,nextseqnum-1] corresponds to packets that have been sent but not yet acknowledged. Sequence numbers in the interval [nextseqnum,base+N-1] can be used for packets that can be sent immediately, should data arrive from the upper layer. Finally, sequence numbers greater than or equal to base+N cannot be used until an unacknowledged packet currently in the pipeline (specifically, the packet with sequence number base) has been acknowledged.</li>
+			    		<li>If we define base to be the sequence number of the oldest unacknowledged packet and nextseqnum to be the smallest unused sequence number (that is, the sequence number of the next packet to be sent), then four intervals in the range of sequence numbers can be identified. Sequence numbers in the interval [0,base-1] correspond to packets that have already been transmitted and acknowledged. The interval [base,nextseqnum-1] corresponds to packets that have been sent but not yet acknowledged. Sequence numbers in the interval [nextseqnum,base+N-1] can be used for packets that can be sent immediately, should data arrive from the upper layer. Finally, sequence numbers greater than or equal to base+N cannot be used until an unacknowledged packet currently in the pipeline (specifically, the packet with sequence number base) has been acknowledged.</li>
 			    		<li>flow control is one reason to impose a limit on the sender.</li>
-			    		<li>cumulative acknowledgment, indicat- ing that all packets with a sequence number up to and including n have been cor- rectly received at the receiver.</li>
+			    		<li>cumulative acknowledgment, indicating that all packets with a sequence number up to and including n have been correctly received at the receiver.</li>
 			    		<li>a timer for the oldest transmitted but not yet acknowledged packet.</li>
 			    		<li>In our GBN protocol, the receiver discards out-of-order packets. Although it may seem silly and wasteful to discard a correctly received (but out-of-order) packet, there is some justification for doing so. Recall that the receiver must deliver data in order to the upper layer. Suppose now that packet n is expected, but packet n + 1 arrives. Because data must be delivered in order, the receiver could buffer (save) packet n + 1 and then deliver this packet to the upper layer after it had later received and delivered packet n. However, if packet n is lost, both it and packet n + 1 will eventually be retransmitted as a result of the GBN retransmission rule at the sender. Thus, the receiver can simply discard packet n + 1. The advantage of this approach is the simplicity of receiver buffering—the receiver need not buffer any out-of-order packets.</li>
 			    	</ul>
@@ -189,7 +189,7 @@
 			<li>MTU</li>
 			<li>how is MSS set?</li>
 			<li>when should tcp send buffered data?</li>
-			<li>TCP connection consists of buffers, vari- ables, and a socket connection to a process in one host, and another set of buffers, variables, and a socket connection to a process in another host. As mentioned ear- lier, no buffers or variables are allocated to the connection in the network elements (routers, switches, and repeaters) between the hosts.</li>
+			<li>TCP connection consists of buffers, variables, and a socket connection to a process in one host, and another set of buffers, variables, and a socket connection to a process in another host. As mentioned earlier, no buffers or variables are allocated to the connection in the network elements (routers, switches, and repeaters) between the hosts.</li>
 		</ul>
 	</li>
 	<li>TCP Segment
@@ -209,7 +209,7 @@
 	<li>Round Trip Time
 		<ol type="A">
 			<li>Length of timeout: the timeout should be larger than the connection’s round-trip time (RTT) [or unnecessary retransmissions would be sent.] </li>
-			<li>SampleRTT, for a segment is the amount of time between when the segment is sent (that is, passed to IP) and when an acknowledg- ment for the segment is received. [not calculated for each segment usually one sample RTT taken at a time](never computes a SampleRTT for a segment that has been retransmitted; it only measures SampleRTT for segments that have been transmitted once)</li>
+			<li>SampleRTT, for a segment is the amount of time between when the segment is sent (that is, passed to IP) and when an acknowledgment for the segment is received. [not calculated for each segment usually one sample RTT taken at a time](never computes a SampleRTT for a segment that has been retransmitted; it only measures SampleRTT for segments that have been transmitted once)</li>
 			<li>EstimatedRTT = (1 – 􏰃A) * EstimatedRTT + 􏰃A * SampleRTT [this weighted average puts more weight on recent samples than on old samples.]</li>
 			<li>variability of the RTT.DevRTT, as an estimate of how much SampleRTT typically deviates from EstimatedRTT:<br/>
 			DevRTT = (1 – 􏰄B) • DevRTT + 􏰄B •| SampleRTT – EstimatedRTT |</li>
@@ -235,14 +235,14 @@
 </ul>
 9- <i> TCP: Flow Control </i><br/>
 <ul>
-	<li>If the application is rela- tively slow at reading the data, the sender can very easily overflow the connection’s receive buffer by sending too much data too quickly.
+	<li>If the application is relatively slow at reading the data, the sender can very easily overflow the connection’s receive buffer by sending too much data too quickly.
 	</li>
 	<li>Flow control is thus a speed-matching service—matching the rate at which the sender is sending against the rate at which the receiving application is reading.</li>
 	<li>TCP provides flow control by having the sender maintain a variable called the receive window. Informally, the receive window is used to give the sender an idea of how much free buffer space is available at the receiver.</li>
 	<li>LastByteRcvd – LastByteRead 􏰅<= RcvBuffer</li>
 	<li>rwnd = RcvBuffer – [LastByteRcvd – LastByteRead]</li>
 	<li>Because the spare room changes with time, rwnd is dynamic</li>
-	<li><b>Problem and Solution:</b> There is one minor technical problem with this scheme. To see this, suppose Host B’s receive buffer becomes full so that rwnd = 0. After advertising rwnd = 0 to Host A, also suppose that B has nothing to send to A. Now consider what hap- pens. As the application process at B empties the buffer, TCP does not send new seg- ments with new rwnd values to Host A; indeed, TCP sends a segment to Host A only if it has data to send or if it has an acknowledgment to send. Therefore, Host A is never informed that some space has opened up in Host B’s receive buffer—Host A is blocked and can transmit no more data! To solve this problem, the TCP specifi- cation requires Host A to continue to send segments with one data byte when B’s receive window is zero. These segments will be acknowledged by the receiver. Eventually the buffer will begin to empty and the acknowledgments will contain a nonzero rwnd value.</li>
+	<li><b>Problem and Solution:</b> There is one minor technical problem with this scheme. To see this, suppose Host B’s receive buffer becomes full so that rwnd = 0. After advertising rwnd = 0 to Host A, also suppose that B has nothing to send to A. Now consider what happens. As the application process at B empties the buffer, TCP does not send new segments with new rwnd values to Host A; indeed, TCP sends a segment to Host A only if it has data to send or if it has an acknowledgment to send. Therefore, Host A is never informed that some space has opened up in Host B’s receive buffer—Host A is blocked and can transmit no more data! To solve this problem, the TCP specification requires Host A to continue to send segments with one data byte when B’s receive window is zero. These segments will be acknowledged by the receiver. Eventually the buffer will begin to empty and the acknowledgments will contain a nonzero rwnd value.</li>
 </ul>
 10- <i> TCP: Connection Management </i><br/>
 <ul>
@@ -277,7 +277,7 @@
 <ul>
 	<li> The basics:
 		<ul>
-		<li>TCP must use end-to-end congestion control rather than net- work-assisted congestion control, since the IP layer provides no explicit feedback to the end systems regarding network congestion.
+		<li>TCP must use end-to-end congestion control rather than network-assisted congestion control, since the IP layer provides no explicit feedback to the end systems regarding network congestion.
 		</li>
 		<li>Limit the rate at which it sends traffic into its connection as a function of perceived network congestion.</li>
 		<li>LastByteSent – LastByteAcked 􏰅<= min{cwnd, rwnd}</li>
@@ -305,7 +305,7 @@
 			<li>(2) Congestion avoidance [mandatory]
 				<ul>
 					<li>increases the value of cwnd by just a single MSS every RTT</li>
-					<li>method 1: increase cwnd by MSS bytes (MSS/cwnd) when- ever a new acknowledgment arrives.</li>
+					<li>method 1: increase cwnd by MSS bytes (MSS/cwnd) whenever a new acknowledgment arrives.</li>
 					<li>The value of cwnd is set to 1 MSS, and the value of ssthresh is updated to half the value of cwnd when the loss event occurred.</li>
 					<li>triple duplicate ACK: TCP halves the value of cwnd (adding in 3 MSS for good measure to account for the triple duplicate ACKs received) and records the value of ssthresh to be half the value of cwnd when the triple duplicate ACKs were received. The fast-recovery state is then entered.</li>
 				</ul>
@@ -325,13 +325,13 @@
 +++ <i> Some Things to Remember </i> +++<br/>
 <ol type="1">
   <li>Each port number is a 16-bit number, ranging from 0 to 65535.</li>
-  <li>The port numbers ranging from 0 to 1023 are called well-known port num- bers and are restricted, which means that they are reserved for use by well-known application protocols such as HTTP (which uses port number 80) and FTP (which uses port number 21).</li>
+  <li>The port numbers ranging from 0 to 1023 are called well-known port numbers and are restricted, which means that they are reserved for use by well-known application protocols such as HTTP (which uses port number 80) and FTP (which uses port number 21).</li>
   <li>a TCP socket is identified by a four-tuple: (source IP address, source port number, destination IP address, destination port number).</li>
-  <li>A connection-establishment request is nothing more than a TCP segment with desti- nation port number 12000 and a special connection-establishment bit set in the TCP header</li>
+  <li>A connection-establishment request is nothing more than a TCP segment with destination port number 12000 and a special connection-establishment bit set in the TCP header</li>
   <li>If the client and server are using persistent HTTP, then throughout the duration of the persistent connection the client and server exchange HTTP messages via the same server socket. However, if the client and server use non-persistent HTTP, then a new TCP connection is created and closed for every request/response, and hence a new socket is created and later closed for every request/response. </li>
-  <li>The TCP segment has 20 bytes of header over- head in every segment, whereas UDP has only 8 bytes of overhead.</li>
+  <li>The TCP segment has 20 bytes of header overhead in every segment, whereas UDP has only 8 bytes of overhead.</li>
   <li>TCP has a 32-bit sequence number field, where TCP sequence numbers count bytes in the byte stream rather than packets.</li>
-  <li>Both Ethernet and PPP link-layer proto- cols have an MSS of 1,500 bytes.</li>
+  <li>Both Ethernet and PPP link-layer protocols have an MSS of 1,500 bytes.</li>
 </ol>
 :)
 
