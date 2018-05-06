@@ -62,7 +62,7 @@ $ git remote add origin <url>
 ```
 $ git remote -v
 ```
-(13) see the current branch:<br>
+(13) see branches:<br>
 ```
 $ git branch -a
 ```
