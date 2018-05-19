@@ -3,7 +3,6 @@
 <p style="color: #D3D3D3">
 	Sources:<br>
 	[1] Computer Networking: A Top Down Approach <br>
-	[2] My Prof. Slides at University of Tehran
 	<hr>
 </p>
 
