@@ -102,4 +102,11 @@ $ git branch -d <branch name>
 ```
 $ git push origin --delete <branch name>
 ```
----
+(22) change remote url 
+```
+git remote set-url origin <url>
+```
+(23) forget a file and remove what you had tracked of it 
+```
+git rm --cached <file>
+```
